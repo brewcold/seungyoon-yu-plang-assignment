@@ -27,8 +27,8 @@ function App() {
   const [overlayOpen, setOverlayOpen] = useState<boolean>(false)
   const passedSecs = Math.floor(displayTime / 1000)
   useEffect(() => {
-    if (countdown < 1) return
-    if (passedSecs >= countdown && passedSecs < countdown + 1) {
+    if (targetSecs < 1) return
+    if (passedSecs >= targetSecs && passedSecs < targetSecs + 1) {
       setOverlayOpen(true)
     }
   }, [passedSecs])
