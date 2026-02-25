@@ -7,7 +7,6 @@ type RunningState = 'RUNNING' | 'PAUSED' | 'IDLE'
 function App() {
   const [runningState, setRunningState] = useState<RunningState>('IDLE')
   const [displayTime, setDisplayTime] = useState(0)
-  const [targetSecs, setTargetSecs] = useState<number>(0)
 
   const startTimeRef = useRef<number>(0)
   const lapRef = useRef<number>(0)
@@ -24,14 +23,14 @@ function App() {
   }, [runningState])
 
   /** 지정한 시간이 지났음을 알려줌, 단 타이머를 정지시키지는 않음  */
+  const [targetSecs, setTargetSecs] = useState(0)
+  const targetSecsInputRef = useRef<HTMLInputElement>(null)
   const [displayAlarm, setDisplayAlarm] = useState<boolean>(false)
   const passedSecs = Math.floor(displayTime / 1000)
   useEffect(() => {
     if (targetSecs < 1) return
-    if (passedSecs >= targetSecs && passedSecs < targetSecs + 1) {
-      setDisplayAlarm(true)
-    }
-  }, [passedSecs])
+    if (!displayAlarm && passedSecs >= targetSecs) setDisplayAlarm(true)
+  }, [passedSecs, targetSecs])
 
   /** 타이머 시작 시 시작시간 설정, pause할 때 시작시간 보정  */
   const handleStart = () => {
@@ -48,6 +47,7 @@ function App() {
     lapRef.current = 0
     setDisplayTime(0)
     setTargetSecs(0)
+    if (targetSecsInputRef.current) targetSecsInputRef.current.value = '0'
     setDisplayAlarm(false)
     setRunningState('IDLE')
   }
@@ -69,9 +69,11 @@ function App() {
       <div className="controller">
         <div className="controller-inputs">
           <input
+            ref={targetSecsInputRef}
             type="number"
-            value={targetSecs}
-            onChange={e => setTargetSecs(Number(e.currentTarget.value))}
+            defaultValue={0}
+            onFocus={() => setDisplayAlarm(false)}
+            onBlur={e => setTargetSecs(Number(e.currentTarget.value))}
             disabled={runningState === 'RUNNING'}
           />
           <span>초 시점에 알림</span>
