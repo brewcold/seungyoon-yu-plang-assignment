@@ -21,7 +21,7 @@ npm run dev
 
 **브라우저 환경에서 setInterval만으로 구현한 타이머는 여러 원인으로 인해 느려질 수 있습니다.**
 
-- `setInterval`의 동작성
+- `setInterval`의 동작 방식
   - 일정 시간마다, 혹은 일정 시간 후에 그 함수의 동작을 보장하는 것이 아님
   - 그 시간 후 콜백을 큐에 넣는 식으로 동작함
 - 싱글 스레드
@@ -58,9 +58,16 @@ npm run dev
   - `startTimeRef.current`에서 파생되는 값
   - 렌더링과 직결됨
 
-#### targetSecs, displayAlarm
+#### targetSecs, targetSecsInputRef, displayAlarm
 
 일정 시간 후 경과 여부를 알려주기 위한 user input 상태와, 알람 컴포넌트가 보여질지 말지를 결정하는 상태입니다.
+
+input 값을 실시간으로 추적할 경우
+
+- 알람이 뜬 후에
+- pause 상태에서 이 값을 재설정하면
+
+알람 컴포넌트의 값도 실시간으로 변경되는 문제가 있습니다. 적어도 사용자가 값 변경을 마친 후에 반응해야 한다고 생각해 비제어 input으로 두되, targetSecs의 상태 추적은 여전히 필요해 상태 업데이트 또한 진행하는 방향으로 구현했습니다.
 
 ### 타이머 로직 및 시간 측정 방법
 
