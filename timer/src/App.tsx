@@ -7,7 +7,7 @@ type RunningState = 'RUNNING' | 'PAUSED' | 'IDLE'
 function App() {
   const [runningState, setRunningState] = useState<RunningState>('IDLE')
   const [displayTime, setDisplayTime] = useState(0)
-  const [countdown, setCountdown] = useState<number>(0)
+  const [targetSecs, setTargetSecs] = useState<number>(0)
 
   const startTimeRef = useRef<number>(0)
   const lapRef = useRef<number>(0)
@@ -47,7 +47,7 @@ function App() {
     startTimeRef.current = 0
     lapRef.current = 0
     setDisplayTime(0)
-    setCountdown(0)
+    setTargetSecs(0)
     setOverlayOpen(false)
     setRunningState('IDLE')
   }
@@ -64,11 +64,16 @@ function App() {
       </div>
       <div className="timerstate">Timer is {runningState}</div>
 
-      <div className={`alarm ${overlayOpen ? 'open' : 'closed'}`}>{countdown}초가 지났습니다</div>
+      <div className={`alarm ${overlayOpen ? 'open' : 'closed'}`}>{targetSecs}초가 지났습니다</div>
 
       <div className="controller">
         <div className="controller-inputs">
-          <input type="number" value={countdown} onChange={e => setCountdown(Number(e.currentTarget.value))} disabled={runningState === 'RUNNING'} />
+          <input
+            type="number"
+            value={targetSecs}
+            onChange={e => setTargetSecs(Number(e.currentTarget.value))}
+            disabled={runningState === 'RUNNING'}
+          />
           <span>초 시점에 알림</span>
         </div>
         <div className="controller-buttons">
