@@ -24,12 +24,12 @@ function App() {
   }, [runningState])
 
   /** 지정한 시간이 지났음을 알려줌, 단 타이머를 정지시키지는 않음  */
-  const [overlayOpen, setOverlayOpen] = useState<boolean>(false)
+  const [displayAlarm, setDisplayAlarm] = useState<boolean>(false)
   const passedSecs = Math.floor(displayTime / 1000)
   useEffect(() => {
     if (targetSecs < 1) return
     if (passedSecs >= targetSecs && passedSecs < targetSecs + 1) {
-      setOverlayOpen(true)
+      setDisplayAlarm(true)
     }
   }, [passedSecs])
 
@@ -40,7 +40,7 @@ function App() {
   }
   const handlePause = () => {
     lapRef.current = displayTime
-    setOverlayOpen(false)
+    setDisplayAlarm(false)
     setRunningState('PAUSED')
   }
   const handleReset = () => {
@@ -48,7 +48,7 @@ function App() {
     lapRef.current = 0
     setDisplayTime(0)
     setTargetSecs(0)
-    setOverlayOpen(false)
+    setDisplayAlarm(false)
     setRunningState('IDLE')
   }
 
@@ -64,7 +64,7 @@ function App() {
       </div>
       <div className="timerstate">Timer is {runningState}</div>
 
-      <div className={`alarm ${overlayOpen ? 'open' : 'closed'}`}>{targetSecs}초가 지났습니다</div>
+      <div className={`alarm ${displayAlarm ? 'open' : 'closed'}`}>{targetSecs}초가 지났습니다</div>
 
       <div className="controller">
         <div className="controller-inputs">
