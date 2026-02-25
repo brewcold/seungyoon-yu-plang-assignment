@@ -75,16 +75,16 @@ function App() {
         </div>
         <div className="controller-buttons">
           <button type="button" onClick={handleReset} disabled={runningState !== 'PAUSED'}>
-            취소
+            Reset
           </button>
 
           {!(runningState === 'RUNNING') ? (
             <button type="button" onClick={handleStart}>
-              시작
+              Start
             </button>
           ) : (
             <button type="button" onClick={handlePause} disabled={runningState !== 'RUNNING'}>
-              일시정지
+              Pause
             </button>
           )}
         </div>
