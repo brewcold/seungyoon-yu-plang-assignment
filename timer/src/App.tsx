@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import { useEffect, useRef, useState } from 'react'
 import { formatTime } from './utils/formatTime'
 
 type RunningState = 'RUNNING' | 'PAUSED' | 'IDLE'
@@ -12,6 +12,7 @@ function App() {
   const startTimeRef = useRef<number>(0)
   const lapRef = useRef<number>(0)
 
+  /** 시작시간은 상태가 아닌 값으로 두고, 100ms마다 현재 시간과 비교해 상태 업데이트  */
   useEffect(() => {
     if (!startTimeRef.current || runningState !== 'RUNNING') return
 
@@ -22,25 +23,26 @@ function App() {
     return () => clearInterval(i)
   }, [runningState])
 
+  /** 지정한 시간이 지났음을 알려줌, 단 타이머를 정지시키지는 않음  */
   const [overlayOpen, setOverlayOpen] = useState<boolean>(false)
+  const passedSecs = Math.floor(displayTime / 1000)
   useEffect(() => {
     if (countdown < 1) return
-    if (Math.floor(displayTime / 1000) >= countdown && Math.floor(displayTime / 1000) < countdown + 1) {
+    if (passedSecs >= countdown && passedSecs < countdown + 1) {
       setOverlayOpen(true)
     }
-  }, [Math.floor(displayTime / 1000)])
+  }, [passedSecs])
 
+  /** 타이머 시작 시 시작시간 설정, pause할 때 시작시간 보정  */
   const handleStart = () => {
     startTimeRef.current = performance.now() - lapRef.current
     setRunningState('RUNNING')
   }
-
   const handlePause = () => {
     lapRef.current = displayTime
     setOverlayOpen(false)
     setRunningState('PAUSED')
   }
-
   const handleReset = () => {
     startTimeRef.current = 0
     lapRef.current = 0
@@ -49,28 +51,22 @@ function App() {
     setRunningState('IDLE')
   }
 
-  const time = formatTime(displayTime)
-
+  const timeString = formatTime(displayTime)
   return (
     <main className="frame">
       <div className="timer">
-        {time.split('').map((c, i) => (
+        {timeString.split('').map((c, i) => (
           <span key={`${c}_${i}`} className={c === ':' ? 'colon' : 'num'}>
             {c}
           </span>
         ))}
       </div>
-      <div className={`overlay ${overlayOpen ? 'open' : 'closed'}`}>{countdown}초가 지났습니다</div>
+
+      <div className={`alarm ${overlayOpen ? 'open' : 'closed'}`}>{countdown}초가 지났습니다</div>
+
       <div className="controller">
         <div className="controller-inputs">
-          <input
-            type="number"
-            value={countdown}
-            onChange={e => {
-              setCountdown(Number(e.currentTarget.value))
-            }}
-            disabled={runningState === 'RUNNING'}
-          />
+          <input type="number" value={countdown} onChange={e => setCountdown(Number(e.currentTarget.value))} disabled={runningState === 'RUNNING'} />
           <span>초 시점에 알림</span>
         </div>
         <div className="controller-buttons">
