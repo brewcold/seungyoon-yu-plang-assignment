@@ -47,6 +47,7 @@ function App() {
     startTimeRef.current = 0
     lapRef.current = 0
     setDisplayTime(0)
+    setCountdown(0)
     setOverlayOpen(false)
     setRunningState('IDLE')
   }
@@ -61,6 +62,7 @@ function App() {
           </span>
         ))}
       </div>
+      <div className="timerstate">Timer is {runningState}</div>
 
       <div className={`alarm ${overlayOpen ? 'open' : 'closed'}`}>{countdown}초가 지났습니다</div>
 
@@ -74,15 +76,13 @@ function App() {
             Reset
           </button>
 
-          {!(runningState === 'RUNNING') ? (
-            <button type="button" onClick={handleStart}>
-              Start
-            </button>
-          ) : (
-            <button type="button" onClick={handlePause} disabled={runningState !== 'RUNNING'}>
-              Pause
-            </button>
-          )}
+          <button type="button" onClick={handleStart} disabled={runningState === 'RUNNING'}>
+            Start
+          </button>
+
+          <button type="button" onClick={handlePause} disabled={runningState !== 'RUNNING'}>
+            Pause
+          </button>
         </div>
       </div>
     </main>
