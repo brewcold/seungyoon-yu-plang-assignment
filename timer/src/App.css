@@ -32,7 +32,7 @@
   padding-bottom: 1.35rem;
 }
 
-.overlay {
+.alarm {
   height: 3rem;
   transition: opacity 0.15s ease;
   margin-bottom: 3rem;
