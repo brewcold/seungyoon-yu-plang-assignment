@@ -22,12 +22,13 @@ function App() {
     return () => clearInterval(i)
   }, [runningState])
 
+  const [overlayOpen, setOverlayOpen] = useState<boolean>(false)
   useEffect(() => {
-    if (countdown > 0 && Math.floor(displayTime / 1000) >= countdown) {
-      alert(`${countdown}초에 도달했습니다`)
-      handlePause()
+    if (countdown < 1) return
+    if (Math.floor(displayTime / 1000) >= countdown && Math.floor(displayTime / 1000) < countdown + 1) {
+      setOverlayOpen(true)
     }
-  }, [displayTime])
+  }, [Math.floor(displayTime / 1000)])
 
   const handleStart = () => {
     startTimeRef.current = performance.now() - lapRef.current
@@ -36,6 +37,7 @@ function App() {
 
   const handlePause = () => {
     lapRef.current = displayTime
+    setOverlayOpen(false)
     setRunningState('PAUSED')
   }
 
@@ -43,6 +45,7 @@ function App() {
     startTimeRef.current = 0
     lapRef.current = 0
     setDisplayTime(0)
+    setOverlayOpen(false)
     setRunningState('IDLE')
   }
 
@@ -57,9 +60,17 @@ function App() {
           </span>
         ))}
       </div>
+      <div className={`overlay ${overlayOpen ? 'open' : 'closed'}`}>{countdown}초가 지났습니다</div>
       <div className="controller">
         <div className="controller-inputs">
-          <input type="number" value={countdown} onChange={e => setCountdown(Number(e.currentTarget.value))} disabled={runningState === 'RUNNING'} />
+          <input
+            type="number"
+            value={countdown}
+            onChange={e => {
+              setCountdown(Number(e.currentTarget.value))
+            }}
+            disabled={runningState === 'RUNNING'}
+          />
           <span>초 시점에 알림</span>
         </div>
         <div className="controller-buttons">
