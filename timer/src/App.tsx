@@ -17,7 +17,7 @@ function App() {
 
     const i = setInterval(() => {
       setDisplayTime(performance.now() - startTimeRef.current)
-    }, 100)
+    }, 100) //업데이트 최대 딜레이가 (<0.1s + a) 정도만 발생하도록
 
     return () => clearInterval(i)
   }, [runningState])
@@ -32,7 +32,7 @@ function App() {
     if (!displayAlarm && passedSecs >= targetSecs) setDisplayAlarm(true)
   }, [passedSecs, targetSecs])
 
-  /** 타이머 시작 시 시작시간 설정, pause할 때 시작시간 보정  */
+  /** 타이머 시작 시 시작시간 설정, pause할 때 시작시간 보정, reset은 모든 입력값 및 시간 초기화  */
   const handleStart = () => {
     startTimeRef.current = performance.now() - lapRef.current
     setRunningState('RUNNING')
@@ -78,6 +78,7 @@ function App() {
           />
           <span>초 시점에 알림</span>
         </div>
+
         <div className="controller-buttons">
           <button type="button" onClick={handleReset} disabled={runningState !== 'PAUSED'}>
             Reset
